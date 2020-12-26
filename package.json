@@ -1,0 +1,27 @@
+{
+  "name": "forkify",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "start": "parcel index.html",
+    "build": "parcel build index.html"
+  },
+  "repository": {
+    "url": "git+https://github.com/ElGutiar/Forkify.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ElGutiar/Forkify/issues"
+  },
+  "homepage": "https://github.com/ElGutiar/Forkify#readme",
+  "devDependencies": {
+    "parcel": "^2.0.0-beta.1",
+    "sass": "^1.30.0"
+  },
+  "dependencies": {
+    "core-js": "^3.8.1",
+    "regenerator-runtime": "^0.13.7"
+  }
+}
