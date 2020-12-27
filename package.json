@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/ElGutiar/Forkify#readme",
   "devDependencies": {
+    "fractional": "^1.0.0",
     "parcel": "^2.0.0-beta.1",
     "sass": "^1.30.0"
   },
