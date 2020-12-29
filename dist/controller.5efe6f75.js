@@ -515,7 +515,7 @@ const controlSearchResults = async function () {
 
     await model.loadSearchResult(query); // 3) Render results
 
-    _resultsView.default.render(model.getSearchResultsPage(3)); // 4) Render initinal pagination buttons
+    _resultsView.default.render(model.getSearchResultsPage()); // 4) Render initinal pagination buttons
 
 
     _paginationView.default.render(model.state.search);
@@ -524,10 +524,20 @@ const controlSearchResults = async function () {
   }
 };
 
+const controlPagination = function (goToPage) {
+  // 3) Render NEW results
+  _resultsView.default.render(model.getSearchResultsPage(goToPage)); // 4) Render NEW pagination buttons
+
+
+  _paginationView.default.render(model.state.search);
+};
+
 const init = function () {
   _recipeView.default.addHandlerRender(controlRecipe);
 
   _searchView.default.addHandlerSearch(controlSearchResults);
+
+  _paginationView.default.addHandlerClick(controlPagination);
 };
 
 init();
@@ -6739,32 +6749,39 @@ class PaginationView extends _View.default {
 
   _generateMarkup() {
     const currentPage = this._data.page;
-    const numPages = Math.ceil(this._data.results.length / this._data.resultPerPage);
-    console.log(numPages); // Page 1, and there are other pages
+    const numPages = Math.ceil(this._data.results.length / this._data.resultPerPage); // Page 1, and there are other pages
 
     if (currentPage === 1 && numPages > 1) {
-      return this._renderNextButton(currentPage);
+      return this._generateNextButton(currentPage);
     } // Last page
 
 
     if (currentPage === numPages && numPages > 1) {
-      return this._renderPrevButton(currentPage);
+      return this._generatePrevButton(currentPage);
     } // Other page
 
 
     if (currentPage < numPages) {
-      const buttons = this._renderDoubleButtons(currentPage);
-
-      console.log(buttons);
+      return this._generateNextPrevBtn(currentPage);
     } // Page 1, and there are NO other pages
 
 
     return '';
   }
 
-  _renderNextButton(currentPage) {
+  addHandlerClick(handler) {
+    this._parentElement.addEventListener('click', function (e) {
+      const btn = e.target.closest('.btn--inline');
+      if (!btn) return;
+      const goToPage = +btn.dataset.goto;
+      console.log(btn, goToPage);
+      handler(goToPage);
+    });
+  }
+
+  _generateNextButton(currentPage) {
     return `
-      <button class="btn--inline pagination__btn--next">
+    <button data-goto="${currentPage + 1}" class="btn--inline pagination__btn--next">
       <span>Page ${currentPage + 1}</span>
         <svg class="search__icon">
           <use href="${_icons.default}#icon-arrow-right"></use>
@@ -6773,23 +6790,23 @@ class PaginationView extends _View.default {
     `;
   }
 
-  _renderPrevButton(currentPage) {
+  _generatePrevButton(currentPage) {
     return `
-    <button class="btn--inline pagination__btn--prev">
+    <button data-goto="${currentPage - 1}" class="btn--inline pagination__btn--prev">
       <svg class="search__icon">
         <use href="${_icons.default}#icon-arrow-left"></use>
       </svg>
       <span>Page ${currentPage - 1}</span>
     </button>
-`;
+    `;
   }
 
-  _renderDoubleButtons(currentPage) {
-    const nextButton = this._renderNextButton(currentPage);
+  _generateNextPrevBtn(currentPage) {
+    const nextButton = this._generateNextButton(currentPage);
 
-    const prevButton = this._renderPrevButton(currentPage);
+    const prevButton = this._generatePrevButton(currentPage);
 
-    return [nextButton, prevButton];
+    return `${nextButton} ${prevButton}`;
   }
 
 }
